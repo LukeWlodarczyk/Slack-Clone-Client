@@ -2,7 +2,14 @@ import React from 'react';
 import { Formik } from 'formik';
 import { Mutation } from 'react-apollo';
 
-import { Container, Header, Input, Button, Message } from 'semantic-ui-react';
+import {
+	Container,
+	Header,
+	Input,
+	Button,
+	Form,
+	Message,
+} from 'semantic-ui-react';
 
 import { REGISTER_USER } from '../queries/user';
 
@@ -28,7 +35,7 @@ const Register = ({ history }) => (
 					const { success, errors } = response.data.register;
 
 					if (success) {
-						return history.push('/');
+						return history.push('/login');
 					}
 
 					setErrors(formatApiErrors(errors));
@@ -43,61 +50,67 @@ const Register = ({ history }) => (
 					isSubmitting,
 				}) => (
 					<Container text>
-						<form onSubmit={handleSubmit}>
+						<Form onSubmit={handleSubmit}>
 							<Header as="h2">Register</Header>
-							<Input
-								fluid
-								placeholder="username"
-								name="username"
-								value={values.username}
-								onChange={handleChange}
-								onBlur={handleBlur}
-								error={!!(touched.username && errors.username)}
-							/>
-							<Input
-								fluid
-								type="email"
-								placeholder="email"
-								name="email"
-								value={values.email}
-								onChange={handleChange}
-								onBlur={handleBlur}
-								error={!!(touched.email && errors.email)}
-							/>
-							<Input
-								fluid
-								type="password"
-								name="password"
-								placeholder="password"
-								onChange={handleChange}
-								onBlur={handleBlur}
-								value={values.password}
-								error={!!(touched.password && errors.password)}
-							/>
-							<Input
-								fluid
-								type="password"
-								name="passwordConf"
-								placeholder="confirm password"
-								onChange={handleChange}
-								onBlur={handleBlur}
-								value={values.passwordConf}
+							<Form.Field error={!!(touched.username && errors.username)}>
+								<Input
+									fluid
+									placeholder="username"
+									name="username"
+									value={values.username}
+									onChange={handleChange}
+									onBlur={handleBlur}
+								/>
+							</Form.Field>
+							<Form.Field error={!!(touched.email && errors.email)}>
+								<Input
+									fluid
+									type="email"
+									placeholder="email"
+									name="email"
+									value={values.email}
+									onChange={handleChange}
+									onBlur={handleBlur}
+								/>
+							</Form.Field>
+							<Form.Field error={!!(touched.password && errors.password)}>
+								<Input
+									fluid
+									type="password"
+									name="password"
+									placeholder="password"
+									onChange={handleChange}
+									onBlur={handleBlur}
+									value={values.password}
+								/>
+							</Form.Field>
+							<Form.Field
 								error={!!(touched.passwordConf && errors.passwordConf)}
-							/>
+							>
+								<Input
+									fluid
+									type="password"
+									name="passwordConf"
+									placeholder="confirm password"
+									onChange={handleChange}
+									onBlur={handleBlur}
+									value={values.passwordConf}
+								/>
+							</Form.Field>
 							<Button type="submit" disabled={isSubmitting}>
 								Submit
 							</Button>
-							{(errors.username ||
-								errors.email ||
-								errors.password ||
-								errors.passwordConf) && (
-								<Message
-									error
-									header="There was some errors with your registration"
-									list={Object.values(errors).map(msg => msg)}
-								/>
-							)}
-						</form>
+						</Form>
+						{(errors.username ||
+							errors.email ||
+							errors.password ||
+							errors.passwordConf) && (
+							<Message
+								error
+								header="There was some errors with your registration"
+								list={Object.values(errors).map(msg => msg)}
+							/>
+						)}
 					</Container>
 				)}
 			/>
