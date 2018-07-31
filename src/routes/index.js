@@ -7,14 +7,16 @@ import Home from './Home';
 import Register from './Register';
 import Login from './Login';
 import CreateTeam from './CreateTeam';
+import ViewTeam from './ViewTeam';
 
 export default () => (
 	<Router>
 		<Switch>
 			<Route exact path="/" component={Home} />
-			<Route exact path="/register" component={Register} />
-			<Route exact path="/login" component={Login} />
-			<PrivateRoute exact path="/create-team" component={CreateTeam} />
+			<Route path="/register" component={Register} />
+			<Route path="/login" component={Login} />
+			<PrivateRoute path="/create-team" component={CreateTeam} />
+			<PrivateRoute path="/view-team" component={ViewTeam} />
 		</Switch>
 	</Router>
 );
