@@ -9,8 +9,14 @@ export const ALL_USERS = gql`
 	}
 `;
 
-export const REGISTER = gql`
+export const REGISTER_USER = gql`
 	mutation($username: String!, $email: String!, $password: String!) {
-		register(username: $username, email: $email, password: $password)
+		register(username: $username, email: $email, password: $password) {
+			success
+			errors {
+				path
+				message
+			}
+		}
 	}
 `;
