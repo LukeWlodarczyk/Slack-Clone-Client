@@ -4,30 +4,30 @@ import { Mutation } from 'react-apollo';
 
 import { Container, Header, Input, Button, Message } from 'semantic-ui-react';
 
-import { REGISTER_USER } from '../queries/user';
+import { LOGIN_USER } from '../queries/user';
 
 import formatApiErrors from '../helpers/formatApiErrors';
-import validate from '../validation/register';
+import validate from '../validation/login';
 
-const Register = ({ history }) => (
-	<Mutation mutation={REGISTER_USER}>
-		{register => (
+const Login = ({ history }) => (
+	<Mutation mutation={LOGIN_USER}>
+		{login => (
 			<Formik
 				initialValues={{
-					username: '',
 					email: '',
 					password: '',
-					passwordConf: '',
 				}}
 				validate={validate}
 				onSubmit={async (values, { setSubmitting, setErrors }) => {
-					const response = await register({ variables: values });
+					const response = await login({ variables: values });
 
 					setSubmitting(false);
 
-					const { success, errors } = response.data.register;
+					const { success, token, refreshToken, errors } = response.data.login;
 
 					if (success) {
+						localStorage.setItem('token', token);
+						localStorage.setItem('refreshToken', refreshToken);
 						return history.push('/');
 					}
 
@@ -44,16 +44,7 @@ const Register = ({ history }) => (
 				}) => (
 					<Container text>
 						<form onSubmit={handleSubmit}>
-							<Header as="h2">Register</Header>
-							<Input
-								fluid
-								placeholder="username"
-								name="username"
-								value={values.username}
-								onChange={handleChange}
-								onBlur={handleBlur}
-								error={!!(touched.username && errors.username)}
-							/>
+							<Header as="h2">Login</Header>
 							<Input
 								fluid
 								type="email"
@@ -74,26 +65,13 @@ const Register = ({ history }) => (
 								value={values.password}
 								error={!!(touched.password && errors.password)}
 							/>
-							<Input
-								fluid
-								type="password"
-								name="passwordConf"
-								placeholder="confirm password"
-								onChange={handleChange}
-								onBlur={handleBlur}
-								value={values.passwordConf}
-								error={!!(touched.passwordConf && errors.passwordConf)}
-							/>
 							<Button type="submit" disabled={isSubmitting}>
 								Submit
 							</Button>
-							{(errors.username ||
-								errors.email ||
-								errors.password ||
-								errors.passwordConf) && (
+							{(errors.email || errors.password) && (
 								<Message
 									error
-									header="There was some errors with your registration"
+									header="There was some errors with your login"
 									list={Object.values(errors).map(msg => msg)}
 								/>
 							)}
@@ -105,4 +83,4 @@ const Register = ({ history }) => (
 	</Mutation>
 );
 
-export default Register;
+export default Login;
