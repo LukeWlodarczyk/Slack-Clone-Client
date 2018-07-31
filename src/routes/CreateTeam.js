@@ -25,7 +25,12 @@ const CreateTeam = ({ history }) => (
 				}}
 				validate={validate}
 				onSubmit={async (values, { setSubmitting, setErrors }) => {
-					const response = await createTeam({ variables: values });
+					let response = null;
+					try {
+						response = await createTeam({ variables: values });
+					} catch (err) {
+						return history.push('/login');
+					}
 
 					setSubmitting(false);
 

@@ -7,7 +7,7 @@ export default values => {
 	}
 
 	if (!name) {
-		errors.name = 'Password is required';
+		errors.name = 'Team name is required';
 	}
 
 	return errors;
