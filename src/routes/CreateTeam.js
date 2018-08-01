@@ -34,10 +34,10 @@ const CreateTeam = ({ history }) => (
 
 					setSubmitting(false);
 
-					const { success, errors } = response.data.createTeam;
+					const { success, team, errors } = response.data.createTeam;
 
 					if (success) {
-						return history.push('/');
+						return history.push(`/view-team/${team.id}`);
 					}
 
 					setErrors(formatApiErrors(errors));

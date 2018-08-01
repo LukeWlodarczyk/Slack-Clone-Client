@@ -16,7 +16,10 @@ export default () => (
 			<Route path="/register" component={Register} />
 			<Route path="/login" component={Login} />
 			<PrivateRoute path="/create-team" component={CreateTeam} />
-			<PrivateRoute path="/view-team" component={ViewTeam} />
+			<PrivateRoute
+				path="/view-team/:teamId?/:channelId?"
+				component={ViewTeam}
+			/>
 		</Switch>
 	</Router>
 );

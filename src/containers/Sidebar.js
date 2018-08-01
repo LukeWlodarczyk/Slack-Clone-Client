@@ -10,8 +10,9 @@ const Sidebar = ({ currentTeamId }) => (
 	<Query query={ALL_TEAMS}>
 		{({ data: { allTeams }, loading }) => {
 			if (loading) return 'Loading';
-
-			const team = allTeams.find(team => Number(team.id) === currentTeamId);
+			const team = currentTeamId
+				? allTeams.find(team => team.id === currentTeamId)
+				: allTeams[0];
 
 			let username = '';
 			try {
