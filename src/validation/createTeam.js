@@ -2,9 +2,9 @@ export default values => {
 	const { name } = values;
 	let errors = {};
 
-	if (name.length < 4 || name.length > 20) {
-		errors.name = 'Team name needs to be between 5 and 20 characters long';
-	}
+	// if (name.length < 3 || name.length > 16) {
+	// 	errors.name = 'Team name needs to be between 3 and 16 characters long';
+	// }
 
 	if (!name) {
 		errors.name = 'Team name is required';
