@@ -15,7 +15,7 @@ const AddChannelModal = ({ open, onClose, teamId }) => (
 					name: '',
 				}}
 				validate={validate}
-				onSubmit={async (values, { setSubmitting, setErrors }) => {
+				onSubmit={async (values, { setSubmitting, setErrors, resetForm }) => {
 					console.log(teamId);
 					const response = await createChannel({
 						variables: { name: values.name, teamId },
@@ -26,8 +26,8 @@ const AddChannelModal = ({ open, onClose, teamId }) => (
 					const { success, errors } = response.data.createChannel;
 
 					if (success) {
-						onClose();
-						return;
+						resetForm();
+						return onClose();
 					}
 
 					setErrors(formatApiErrors(errors));
