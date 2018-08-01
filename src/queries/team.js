@@ -11,3 +11,16 @@ export const CREATE_TEAM = gql`
 		}
 	}
 `;
+
+export const ALL_TEAMS = gql`
+	query {
+		allTeams {
+			id
+			name
+			channels {
+				id
+				name
+			}
+		}
+	}
+`;
