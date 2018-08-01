@@ -21,24 +21,27 @@ const middlewareLink = setContext(() => ({
 	},
 }));
 
-const afterwareLink = new ApolloLink((operation, forward) => {
-	const { headers } = operation.getContext();
+const afterwareLink = new ApolloLink((operation, forward) =>
+	forward(operation).map(response => {
+		const {
+			response: { headers },
+		} = operation.getContext();
+		if (headers) {
+			const token = headers.get('x-token') || null;
+			const refreshToken = headers.get('x-refresh-token') || null;
 
-	if (headers) {
-		const token = headers.get('x-token');
-		const refreshToken = headers.get('x-refresh-token');
+			if (token) {
+				localStorage.setItem('token', token);
+			}
 
-		if (token) {
-			localStorage.setItem('token', token);
+			if (refreshToken) {
+				localStorage.setItem('refreshToken', refreshToken);
+			}
 		}
 
-		if (refreshToken) {
-			localStorage.setItem('refreshToken', refreshToken);
-		}
-	}
-
-	return forward(operation);
-});
+		return response;
+	})
+);
 
 const link = afterwareLink.concat(middlewareLink.concat(httpLink));
 
