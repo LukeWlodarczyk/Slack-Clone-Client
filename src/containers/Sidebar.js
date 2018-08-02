@@ -43,6 +43,7 @@ class Sidebar extends Component {
 							/>
 							<Channels
 								teamName={team.name}
+								teamId={team.id}
 								username={username}
 								channels={team.channels}
 								users={[{ id: 1, name: 'slackbot' }, { id: 2, name: 'user1' }]}
