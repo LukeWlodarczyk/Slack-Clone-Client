@@ -1,63 +1,54 @@
 import React, { Fragment, Component } from 'react';
-import { Query } from 'react-apollo';
 import decode from 'jwt-decode';
 
 import Channels from '../components/Channels';
 import Teams from '../components/Teams';
 import AddChannelModal from '../components/AddChannelModal';
-import { ALL_TEAMS } from '../queries/team';
+import InvitePeopleModal from '../components/InvitePeopleModal';
 
 class Sidebar extends Component {
 	state = {
-		modalOpen: false,
+		modalAddChannelOpen: false,
+		modalInvitePeopleOpen: false,
 	};
 
-	toggleModal = () => {
-		this.setState({ modalOpen: !this.state.modalOpen });
+	toggleModal = name => () => {
+		this.setState({ [name]: !this.state[name] });
 	};
 
 	render() {
-		const { currentTeamId } = this.props;
+		const { teams, team } = this.props;
+
+		let username = '';
+		try {
+			const token = localStorage.getItem('token');
+			const { user } = decode(token);
+			username = user.username;
+		} catch (err) {}
+
 		return (
-			<Query query={ALL_TEAMS}>
-				{({ data: { allTeams }, loading }) => {
-					if (loading) return 'Loading';
-					const team = currentTeamId
-						? allTeams.find(team => team.id === currentTeamId)
-						: allTeams[0];
-
-					let username = '';
-					try {
-						const token = localStorage.getItem('token');
-						const { user } = decode(token);
-						username = user.username;
-					} catch (err) {}
-
-					return (
-						<Fragment>
-							<Teams
-								teams={allTeams.map(t => ({
-									id: t.id,
-									letter: t.name.charAt(0).toUpperCase(),
-								}))}
-							/>
-							<Channels
-								teamName={team.name}
-								teamId={team.id}
-								username={username}
-								channels={team.channels}
-								users={[{ id: 1, name: 'slackbot' }, { id: 2, name: 'user1' }]}
-								onAddChannelClick={this.toggleModal}
-							/>
-							<AddChannelModal
-								onClose={this.toggleModal}
-								open={this.state.modalOpen}
-								teamId={team.id}
-							/>
-						</Fragment>
-					);
-				}}
-			</Query>
+			<Fragment>
+				<Teams teams={teams} />
+				<Channels
+					teamName={team.name}
+					teamId={team.id}
+					username={username}
+					channels={team.channels}
+					users={[{ id: 1, name: 'slackbot' }, { id: 2, name: 'user1' }]}
+					onAddChannelClick={this.toggleModal('modalAddChannelOpen')}
+					onInvitePeopleClick={this.toggleModal('modalInvitePeopleOpen')}
+				/>
+				<AddChannelModal
+					onClose={this.toggleModal('modalAddChannelOpen')}
+					open={this.state.modalAddChannelOpen}
+					teamId={team.id}
+				/>
+				<InvitePeopleModal
+					onClose={this.toggleModal('modalInvitePeopleOpen')}
+					open={this.state.modalInvitePeopleOpen}
+					teamId={team.id}
+				/>
+			</Fragment>
 		);
 	}
 }

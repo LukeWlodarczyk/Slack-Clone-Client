@@ -15,6 +15,18 @@ export const CREATE_TEAM = gql`
 	}
 `;
 
+export const ADD_TEAM_MEMBER = gql`
+	mutation($teamId: ID!, $email: String!) {
+		addTeamMember(teamId: $teamId, email: $email) {
+			success
+			errors {
+				path
+				message
+			}
+		}
+	}
+`;
+
 export const ALL_TEAMS = gql`
 	query {
 		allTeams {
