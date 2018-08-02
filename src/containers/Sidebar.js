@@ -12,7 +12,9 @@ class Sidebar extends Component {
 		modalInvitePeopleOpen: false,
 	};
 
-	toggleModal = name => () => {
+	toggleModal = name => e => {
+		if (e) e.preventDefault();
+
 		this.setState({ [name]: !this.state[name] });
 	};
 
