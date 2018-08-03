@@ -6,6 +6,11 @@ export const CREATE_TEAM = gql`
 			success
 			team {
 				id
+				name
+				channels {
+					id
+					name
+				}
 			}
 			errors {
 				path
@@ -27,11 +32,26 @@ export const ADD_TEAM_MEMBER = gql`
 	}
 `;
 
-export const ALL_TEAMS = gql`
+export const MY_TEAMS = gql`
 	query {
-		allTeams {
+		myTeamsAsOwner {
 			id
 			name
+			owner {
+				id
+			}
+			channels {
+				id
+				name
+			}
+		}
+
+		myTeamsAsMember {
+			id
+			name
+			owner {
+				id
+			}
 			channels {
 				id
 				name

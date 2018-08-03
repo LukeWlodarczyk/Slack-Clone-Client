@@ -1,48 +1,71 @@
 import React from 'react';
 import { Query } from 'react-apollo';
+import { Redirect } from 'react-router-dom';
 
-import { ALL_TEAMS } from '../queries/team';
+import { MY_TEAMS } from '../queries/team';
 
 import Header from '../components/Header';
-import Messages from '../components/Messages';
 import SendMessage from '../components/SendMessage';
 import AppLayout from '../components/AppLayout';
 import Sidebar from '../containers/Sidebar';
+import MessageContainer from '../containers/MessageContainer';
 
 export default ({
 	match: {
 		params: { teamId, channelId },
 	},
 }) => (
-	<Query query={ALL_TEAMS}>
-		{({ data: { allTeams }, loading }) => {
+	<Query query={MY_TEAMS}>
+		{({ data: { myTeamsAsOwner, myTeamsAsMember }, loading }) => {
 			if (loading) return 'Loading';
 
-			const team = teamId
-				? allTeams.find(team => team.id === teamId)
-				: allTeams[0];
+			const myAllTeams = [...myTeamsAsOwner, ...myTeamsAsMember];
 
-			const channel = channelId
-				? team.channels.find(channel => channel.id === channelId)
+			if (!myAllTeams.length) {
+				return <Redirect to="/create-team" />;
+			}
+
+			const teamID = teamId && teamId.replace(/\D/g, '');
+			const channelID = channelId && channelId.replace(/\D/g, '');
+
+			if (
+				teamId !== undefined &&
+				teamId !== '' &&
+				(teamId !== teamID && channelId !== channelID)
+			) {
+				return <Redirect to={`/view-team/${teamID}/${channelID}`} />;
+			} else if (teamId !== undefined && teamId !== '' && teamId !== teamID) {
+				return <Redirect to={`/view-team/${teamID}/${channelId}`} />;
+			} else if (channelId !== undefined && channelId !== channelID) {
+				return <Redirect to={`/view-team/${teamId}/${channelID}`} />;
+			} else if (teamId !== undefined && teamId === '') {
+				return <Redirect to={`/view-team`} />;
+			}
+
+			let team = teamID
+				? myAllTeams.find(team => team.id === teamID)
+				: myAllTeams[0];
+
+			team = team || myAllTeams[0];
+
+			let channel = channelID
+				? team.channels.find(channel => channel.id === channelID)
 				: team.channels[0];
+
+			channel = channel || team.channels[0];
 
 			return (
 				<AppLayout>
 					<Sidebar
 						team={team}
-						teams={allTeams.map(t => ({
+						teams={myAllTeams.map(t => ({
 							id: t.id,
 							letter: t.name.charAt(0).toUpperCase(),
 						}))}
 					/>
 					<Header channelName={channel.name} />
-					<Messages channelId={channel.id}>
-						<ul className="message-list">
-							<li />
-							<li />
-						</ul>
-					</Messages>
-					<SendMessage channelName={channel.name} />
+					<MessageContainer channelId={channel.id} />
+					<SendMessage channelName={channel.name} channelId={channel.id} />
 				</AppLayout>
 			);
 		}}

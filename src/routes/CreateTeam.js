@@ -11,13 +11,29 @@ import {
 	Message,
 } from 'semantic-ui-react';
 
-import { CREATE_TEAM } from '../queries/team';
+import { CREATE_TEAM, MY_TEAMS } from '../queries/team';
 
 import formatApiErrors from '../helpers/formatApiErrors';
 import validate from '../validation/createTeam';
 
+const update = (store, { data: { createTeam } }) => {
+	const { team, success } = createTeam;
+
+	if (!success) {
+		return;
+	}
+
+	const data = store.readQuery({ query: MY_TEAMS });
+
+	const newData = JSON.parse(JSON.stringify(data));
+
+	newData.myTeamsAsOwner.push(team);
+
+	store.writeQuery({ query: MY_TEAMS, data: newData });
+};
+
 const CreateTeam = ({ history }) => (
-	<Mutation mutation={CREATE_TEAM}>
+	<Mutation mutation={CREATE_TEAM} update={update}>
 		{createTeam => (
 			<Formik
 				initialValues={{
@@ -27,7 +43,28 @@ const CreateTeam = ({ history }) => (
 				onSubmit={async (values, { setSubmitting, setErrors }) => {
 					let response = null;
 					try {
-						response = await createTeam({ variables: values });
+						response = await createTeam({
+							variables: values,
+							optimisticResponse: {
+								createTeam: {
+									__typename: 'Mutation',
+									success: true,
+									team: {
+										__typename: 'Team',
+										id: -1,
+										name: values.name,
+										channels: [
+											{
+												__typename: 'Channel',
+												id: -1,
+												name: 'General',
+											},
+										],
+									},
+									errors: null,
+								},
+							},
+						});
 					} catch (err) {
 						return history.push('/login');
 					}
@@ -36,6 +73,7 @@ const CreateTeam = ({ history }) => (
 
 					const { success, team, errors } = response.data.createTeam;
 
+					console.log(team);
 					if (success) {
 						return history.push(`/view-team/${team.id}`);
 					}
