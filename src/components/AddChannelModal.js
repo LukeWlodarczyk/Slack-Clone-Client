@@ -4,7 +4,7 @@ import { Mutation } from 'react-apollo';
 import { Button, Form, Input, Modal } from 'semantic-ui-react';
 
 import { CREATE_CHANEL } from '../queries/channel';
-import { ALL_TEAMS } from '../queries/team';
+import { MY_TEAMS } from '../queries/team';
 import validate from '../validation/createChannel';
 import formatApiErrors from '../helpers/formatApiErrors';
 
@@ -14,17 +14,17 @@ const update = teamId => (store, { data: { createChannel } }) => {
 	if (!success) {
 		return;
 	}
-	const data = store.readQuery({ query: ALL_TEAMS });
+	const data = store.readQuery({ query: MY_TEAMS });
 
 	const newData = JSON.parse(JSON.stringify(data));
 
-	newData.allTeams.find(team => {
+	newData.myTeamsAsOwner.find(team => {
 		if (team.id === teamId) {
 			team.channels = [...team.channels, channel];
 		}
 	});
 
-	store.writeQuery({ query: ALL_TEAMS, data: newData });
+	store.writeQuery({ query: MY_TEAMS, data: newData });
 };
 
 const AddChannelModal = ({ open, onClose, teamId }) => (

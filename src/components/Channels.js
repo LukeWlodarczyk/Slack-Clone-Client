@@ -65,32 +65,40 @@ export default ({
 	users,
 	onAddChannelClick,
 	onInvitePeopleClick,
+	isOwner,
 }) => (
 	<ChannelWrapper>
 		<PushLeft>
 			<TeamNameHeader>{teamName}</TeamNameHeader>
 			{username}
 		</PushLeft>
+
 		<div>
 			<SideBarList>
 				<SideBarListHeader>
-					Channels <Icon onClick={onAddChannelClick} name="add circle" />
+					Channels{' '}
+					{isOwner && <Icon onClick={onAddChannelClick} name="add circle" />}
 				</SideBarListHeader>
+
 				{channels.map(c => channel(c, teamId))}
 			</SideBarList>
 		</div>
+
 		<div>
 			<SideBarList>
 				<SideBarListHeader>Direct Messages</SideBarListHeader>
 				{users.map(user)}
 			</SideBarList>
 		</div>
-		<div>
-			<SideBarList>
-				<SideBarListHeader>
-					Invite people <Icon onClick={onInvitePeopleClick} name="add circle" />{' '}
-				</SideBarListHeader>
-			</SideBarList>
-		</div>
+		{isOwner && (
+			<div>
+				<SideBarList>
+					<SideBarListHeader>
+						Invite people{' '}
+						<Icon onClick={onInvitePeopleClick} name="add circle" />{' '}
+					</SideBarListHeader>
+				</SideBarList>
+			</div>
+		)}
 	</ChannelWrapper>
 );
