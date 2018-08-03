@@ -5,6 +5,7 @@ import { Button, Form, Input, Modal } from 'semantic-ui-react';
 
 import { ADD_TEAM_MEMBER } from '../queries/team';
 import formatApiErrors from '../helpers/formatApiErrors';
+import validate from '../validation/invitePeople';
 
 const InvitePeopleModal = ({ open, onClose, teamId }) => (
 	<Mutation mutation={ADD_TEAM_MEMBER}>
@@ -13,6 +14,7 @@ const InvitePeopleModal = ({ open, onClose, teamId }) => (
 				initialValues={{
 					email: '',
 				}}
+				validate={validate}
 				onSubmit={async (values, { setSubmitting, setErrors, resetForm }) => {
 					const response = await addTeamMember({
 						variables: { email: values.email, teamId },
@@ -43,7 +45,7 @@ const InvitePeopleModal = ({ open, onClose, teamId }) => (
 							<Modal.Header>Add people to your team</Modal.Header>
 							<Modal.Content>
 								<Form>
-									<Form.Field error={!!(touched.name && errors.name)}>
+									<Form.Field error={!!(touched.email && errors.email)}>
 										<Input
 											name="email"
 											fluid
@@ -52,7 +54,7 @@ const InvitePeopleModal = ({ open, onClose, teamId }) => (
 											onChange={handleChange}
 											onBlur={handleBlur}
 										/>
-										{errors && <p>{errors.email}</p>}
+										{touched.email && errors.email && <p>{errors.email}</p>}
 									</Form.Field>
 									<Form.Group widths="equal">
 										<Button disabled={isSubmitting} fluid onClick={onClose}>
