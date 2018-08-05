@@ -24,3 +24,16 @@ export const CHANNEL_MESSAGES = gql`
 		}
 	}
 `;
+
+export const NEW_CHANNEL_MESSAGE_SUBSCRIPTION = gql`
+	subscription($channelId: ID!) {
+		newChannelMessage(channelId: $channelId) {
+			id
+			text
+			user {
+				username
+			}
+			created_at
+		}
+	}
+`;
