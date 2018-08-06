@@ -44,6 +44,10 @@ export const AUTH_USER = gql`
 				id
 				admin
 				name
+				directMessageMembers {
+					id
+					username
+				}
 				channels {
 					id
 					name
