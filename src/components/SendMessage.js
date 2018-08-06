@@ -5,7 +5,6 @@ import { Formik } from 'formik';
 
 import { Mutation } from 'react-apollo';
 
-import { CREATE_MESSAGE } from '../queries/message';
 import formatApiErrors from '../helpers/formatApiErrors';
 
 const SendMessageWrapper = styled.div`
@@ -16,9 +15,9 @@ const SendMessageWrapper = styled.div`
 
 const ENTER_KEY = 13;
 
-const SendMessage = ({ channelName, channelId }) => (
-	<Mutation mutation={CREATE_MESSAGE}>
-		{createMessage => (
+const SendMessage = ({ MUTATION, mutationName, variables, placeholder }) => (
+	<Mutation mutation={MUTATION}>
+		{mutate => (
 			<Formik
 				initialValues={{
 					text: '',
@@ -27,13 +26,17 @@ const SendMessage = ({ channelName, channelId }) => (
 					if (!values.text || !values.text.trim()) {
 						return setSubmitting(false);
 					}
-					const response = await createMessage({
-						variables: { text: values.text, channelId },
+
+					const response = await mutate({
+						variables: variables(values.text),
 					});
 
 					setSubmitting(false);
 
-					const { success, errors } = response.data.createMessage;
+					const { success, errors } = response.data[mutationName];
+
+					console.log(success);
+					console.log(errors);
 
 					if (success) {
 						return resetForm();
@@ -53,7 +56,7 @@ const SendMessage = ({ channelName, channelId }) => (
 					<SendMessageWrapper>
 						<Input
 							fluid
-							placeholder={`Message #${channelName}`}
+							placeholder={`Message #${placeholder}`}
 							name="text"
 							value={values.text}
 							onChange={handleChange}

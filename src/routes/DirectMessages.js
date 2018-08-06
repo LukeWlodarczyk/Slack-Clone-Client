@@ -3,17 +3,17 @@ import { Query } from 'react-apollo';
 import { Redirect } from 'react-router-dom';
 
 import { AUTH_USER } from '../queries/user';
-import { CREATE_MESSAGE } from '../queries/message';
+import { CREATE_DIRECT_MESSAGE } from '../queries/message';
 
 import Header from '../components/Header';
 import SendMessage from '../components/SendMessage';
 import AppLayout from '../components/AppLayout';
 import Sidebar from '../containers/Sidebar';
-import MessageContainer from '../containers/MessageContainer';
+import DirectMessageContainer from '../containers/DirectMessageContainer';
 
 export default ({
 	match: {
-		params: { teamId, channelId },
+		params: { teamId, userId },
 	},
 }) => (
 	<Query query={AUTH_USER} fetchPolicy="network-only">
@@ -27,33 +27,12 @@ export default ({
 			}
 
 			const teamID = teamId && teamId.replace(/\D/g, '');
-			const channelID = channelId && channelId.replace(/\D/g, '');
-
-			if (
-				teamId !== undefined &&
-				teamId !== '' &&
-				(teamId !== teamID && channelId !== channelID)
-			) {
-				return <Redirect to={`/view-team/${teamID}/${channelID}`} />;
-			} else if (teamId !== undefined && teamId !== '' && teamId !== teamID) {
-				return <Redirect to={`/view-team/${teamID}/${channelId}`} />;
-			} else if (channelId !== undefined && channelId !== channelID) {
-				return <Redirect to={`/view-team/${teamId}/${channelID}`} />;
-			} else if (teamId !== undefined && teamId === '') {
-				return <Redirect to={`/view-team`} />;
-			}
 
 			let team = teamID
 				? myAllTeams.find(team => team.id === teamID)
 				: myAllTeams[0];
 
 			team = team || myAllTeams[0];
-
-			let channel = channelID
-				? team.channels.find(channel => channel.id === channelID)
-				: team.channels[0];
-
-			channel = channel || team.channels[0];
 
 			return (
 				<AppLayout>
@@ -65,15 +44,16 @@ export default ({
 						}))}
 						username={getAuthUser.username}
 					/>
-					<Header channelName={channel.name} />
-					<MessageContainer channelId={channel.id} />
+					<Header channelName={'Some user name'} />
+					<DirectMessageContainer teamId={team.id} userId={userId} />
 					<SendMessage
-						MUTATION={CREATE_MESSAGE}
-						mutationName="createMessage"
-						placeholder={channel.name}
+						placeholder={userId}
+						MUTATION={CREATE_DIRECT_MESSAGE}
+						mutationName="createDirectMessage"
 						variables={text => ({
 							text,
-							channelId: channel.id,
+							teamId: team.id,
+							receiverId: userId,
 						})}
 					/>
 				</AppLayout>
