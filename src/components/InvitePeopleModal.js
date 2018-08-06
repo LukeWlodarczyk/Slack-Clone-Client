@@ -3,12 +3,35 @@ import { Formik } from 'formik';
 import { Mutation } from 'react-apollo';
 import { Button, Form, Input, Modal } from 'semantic-ui-react';
 
-import { ADD_TEAM_MEMBER } from '../queries/team';
+import { ADD_TEAM_MEMBER, TEAM_MEMBER } from '../queries/team';
 import formatApiErrors from '../helpers/formatApiErrors';
 import validate from '../validation/invitePeople';
 
+const update = teamId => (store, { data: { addTeamMember } }) => {
+	const { success, user } = addTeamMember;
+
+	if (!success) {
+		return;
+	}
+
+	const data = store.readQuery({
+		query: TEAM_MEMBER,
+		variables: { teamId },
+	});
+
+	const newData = JSON.parse(JSON.stringify(data));
+
+	newData.teamMembers.push(user);
+
+	store.writeQuery({
+		query: TEAM_MEMBER,
+		variables: { teamId },
+		data: newData,
+	});
+};
+
 const InvitePeopleModal = ({ open, onClose, teamId }) => (
-	<Mutation mutation={ADD_TEAM_MEMBER}>
+	<Mutation mutation={ADD_TEAM_MEMBER} update={update(teamId)}>
 		{addTeamMember => (
 			<Formik
 				initialValues={{
