@@ -2,7 +2,7 @@ import React from 'react';
 import { Query } from 'react-apollo';
 import { Redirect } from 'react-router-dom';
 
-import { MY_TEAMS } from '../queries/team';
+import { AUTH_USER } from '../queries/user';
 
 import Header from '../components/Header';
 import SendMessage from '../components/SendMessage';
@@ -15,11 +15,11 @@ export default ({
 		params: { teamId, channelId },
 	},
 }) => (
-	<Query query={MY_TEAMS}>
-		{({ data: { myTeamsAsOwner, myTeamsAsMember }, loading }) => {
+	<Query query={AUTH_USER} fetchPolicy="network-only">
+		{({ data: { getAuthUser }, loading }) => {
 			if (loading) return 'Loading';
 
-			const myAllTeams = [...myTeamsAsOwner, ...myTeamsAsMember];
+			const myAllTeams = getAuthUser.teams;
 
 			if (!myAllTeams.length) {
 				return <Redirect to="/create-team" />;
@@ -62,6 +62,7 @@ export default ({
 							id: t.id,
 							letter: t.name.charAt(0).toUpperCase(),
 						}))}
+						username={getAuthUser.username}
 					/>
 					<Header channelName={channel.name} />
 					<MessageContainer channelId={channel.id} />

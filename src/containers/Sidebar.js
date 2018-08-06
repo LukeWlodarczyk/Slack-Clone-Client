@@ -1,5 +1,4 @@
 import React, { Fragment, Component } from 'react';
-import decode from 'jwt-decode';
 
 import Channels from '../components/Channels';
 import Teams from '../components/Teams';
@@ -19,17 +18,7 @@ class Sidebar extends Component {
 	};
 
 	render() {
-		const { teams, team } = this.props;
-
-		let username = '';
-		let isOwner = false;
-		try {
-			const token = localStorage.getItem('token');
-			const { user } = decode(token);
-
-			isOwner = user.id === parseInt(team.owner.id, 10);
-			username = user.username;
-		} catch (err) {}
+		const { teams, team, username } = this.props;
 
 		return (
 			<Fragment>
@@ -37,14 +26,14 @@ class Sidebar extends Component {
 				<Channels
 					teamName={team.name}
 					teamId={team.id}
-					isOwner={isOwner}
+					isOwner={team.admin}
 					username={username}
 					channels={team.channels}
 					users={[{ id: 1, name: 'slackbot' }, { id: 2, name: 'user1' }]}
 					onAddChannelClick={this.toggleModal('modalAddChannelOpen')}
 					onInvitePeopleClick={this.toggleModal('modalInvitePeopleOpen')}
 				/>
-				{isOwner && (
+				{team.admin && (
 					<Fragment>
 						<AddChannelModal
 							onClose={this.toggleModal('modalAddChannelOpen')}

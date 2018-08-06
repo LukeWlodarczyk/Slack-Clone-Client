@@ -31,31 +31,3 @@ export const ADD_TEAM_MEMBER = gql`
 		}
 	}
 `;
-
-export const MY_TEAMS = gql`
-	query {
-		myTeamsAsOwner {
-			id
-			name
-			owner {
-				id
-			}
-			channels {
-				id
-				name
-			}
-		}
-
-		myTeamsAsMember {
-			id
-			name
-			owner {
-				id
-			}
-			channels {
-				id
-				name
-			}
-		}
-	}
-`;

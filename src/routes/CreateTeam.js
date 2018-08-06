@@ -11,29 +11,30 @@ import {
 	Message,
 } from 'semantic-ui-react';
 
-import { CREATE_TEAM, MY_TEAMS } from '../queries/team';
+import { CREATE_TEAM } from '../queries/team';
+// import { AUTH_USER } from '../queries/user';
 
 import formatApiErrors from '../helpers/formatApiErrors';
 import validate from '../validation/createTeam';
 
-const update = (store, { data: { createTeam } }) => {
-	const { team, success } = createTeam;
-
-	if (!success) {
-		return;
-	}
-
-	const data = store.readQuery({ query: MY_TEAMS });
-
-	const newData = JSON.parse(JSON.stringify(data));
-
-	newData.myTeamsAsOwner.push(team);
-
-	store.writeQuery({ query: MY_TEAMS, data: newData });
-};
+// const update = (store, { data: { createTeam } }) => {
+// 	const { team, success } = createTeam;
+//
+// 	if (!success) {
+// 		return;
+// 	}
+//
+// 	const data = store.readQuery({ query: AUTH_USER });
+//
+// 	const newData = JSON.parse(JSON.stringify(data));
+//
+// 	newData.getAuthUser.teams.push(team);
+//
+// 	store.writeQuery({ query: AUTH_USER, data: newData });
+// };
 
 const CreateTeam = ({ history }) => (
-	<Mutation mutation={CREATE_TEAM} update={update}>
+	<Mutation mutation={CREATE_TEAM} /*update={update} */>
 		{createTeam => (
 			<Formik
 				initialValues={{
@@ -73,7 +74,6 @@ const CreateTeam = ({ history }) => (
 
 					const { success, team, errors } = response.data.createTeam;
 
-					console.log(team);
 					if (success) {
 						return history.push(`/view-team/${team.id}`);
 					}

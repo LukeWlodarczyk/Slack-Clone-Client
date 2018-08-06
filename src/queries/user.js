@@ -34,3 +34,21 @@ export const LOGIN_USER = gql`
 		}
 	}
 `;
+
+export const AUTH_USER = gql`
+	query {
+		getAuthUser {
+			id
+			username
+			teams {
+				id
+				admin
+				name
+				channels {
+					id
+					name
+				}
+			}
+		}
+	}
+`;
