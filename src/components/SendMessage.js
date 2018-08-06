@@ -35,9 +35,6 @@ const SendMessage = ({ MUTATION, mutationName, variables, placeholder }) => (
 
 					const { success, errors } = response.data[mutationName];
 
-					console.log(success);
-					console.log(errors);
-
 					if (success) {
 						return resetForm();
 					}

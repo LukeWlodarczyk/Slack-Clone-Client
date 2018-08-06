@@ -24,6 +24,10 @@ export const ADD_TEAM_MEMBER = gql`
 	mutation($teamId: ID!, $email: String!) {
 		addTeamMember(teamId: $teamId, email: $email) {
 			success
+			user {
+				username
+				id
+			}
 			errors {
 				path
 				message
