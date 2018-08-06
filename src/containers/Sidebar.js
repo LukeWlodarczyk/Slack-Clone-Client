@@ -4,11 +4,13 @@ import Channels from '../components/Channels';
 import Teams from '../components/Teams';
 import AddChannelModal from '../components/AddChannelModal';
 import InvitePeopleModal from '../components/InvitePeopleModal';
+import NewDirectMessageModal from '../components/NewDirectMessageModal';
 
 class Sidebar extends Component {
 	state = {
 		modalAddChannelOpen: false,
 		modalInvitePeopleOpen: false,
+		modalNewDirectMessage: false,
 	};
 
 	toggleModal = name => e => {
@@ -32,6 +34,13 @@ class Sidebar extends Component {
 					users={[{ id: 1, name: 'slackbot' }, { id: 2, name: 'user1' }]}
 					onAddChannelClick={this.toggleModal('modalAddChannelOpen')}
 					onInvitePeopleClick={this.toggleModal('modalInvitePeopleOpen')}
+					onNewDirectMessageClick={this.toggleModal('modalNewDirectMessage')}
+				/>
+				<NewDirectMessageModal
+					onClose={this.toggleModal('modalNewDirectMessage')}
+					open={this.state.modalNewDirectMessage}
+					teamId={team.id}
+					history={this.props.history}
 				/>
 				{team.admin && (
 					<Fragment>

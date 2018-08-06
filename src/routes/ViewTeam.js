@@ -15,6 +15,7 @@ export default ({
 	match: {
 		params: { teamId, channelId },
 	},
+	history,
 }) => (
 	<Query query={AUTH_USER} fetchPolicy="network-only">
 		{({ data: { getAuthUser }, loading }) => {
@@ -64,6 +65,7 @@ export default ({
 							letter: t.name.charAt(0).toUpperCase(),
 						}))}
 						username={getAuthUser.username}
+						history={history}
 					/>
 					<Header channelName={channel.name} />
 					<MessageContainer channelId={channel.id} />
