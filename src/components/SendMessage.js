@@ -15,7 +15,14 @@ const SendMessageWrapper = styled.div`
 
 const ENTER_KEY = 13;
 
-const SendMessage = ({ MUTATION, mutationName, variables, placeholder }) => (
+const SendMessage = ({
+	MUTATION,
+	mutationName,
+	variables,
+	optimisticResponse,
+	update,
+	placeholder,
+}) => (
 	<Mutation mutation={MUTATION}>
 		{mutate => (
 			<Formik
@@ -27,9 +34,14 @@ const SendMessage = ({ MUTATION, mutationName, variables, placeholder }) => (
 						return setSubmitting(false);
 					}
 
-					const response = await mutate({
+					const opts = {
 						variables: variables(values.text),
-					});
+					};
+
+					optimisticResponse && (opts.optimisticResponse = optimisticResponse);
+					update && (opts.update = update);
+
+					const response = await mutate(opts);
 
 					setSubmitting(false);
 
