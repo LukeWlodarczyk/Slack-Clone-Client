@@ -71,9 +71,16 @@ const AddChannelModal = ({ open, onClose, teamId }) => (
 					handleBlur,
 					handleSubmit,
 					isSubmitting,
+					resetForm,
 				}) => (
 					<Form onSubmit={handleSubmit}>
-						<Modal open={open} onClose={onClose}>
+						<Modal
+							open={open}
+							onClose={e => {
+								resetForm();
+								onClose(e);
+							}}
+						>
 							<Modal.Header>Create Channel</Modal.Header>
 							<Modal.Content>
 								<Form>
@@ -89,7 +96,14 @@ const AddChannelModal = ({ open, onClose, teamId }) => (
 										{errors && <p>{errors.name}</p>}
 									</Form.Field>
 									<Form.Group widths="equal">
-										<Button disabled={isSubmitting} fluid onClick={onClose}>
+										<Button
+											disabled={isSubmitting}
+											fluid
+											onClick={e => {
+												resetForm();
+												onClose(e);
+											}}
+										>
 											Cancel
 										</Button>
 										<Button disabled={isSubmitting} type="submit" fluid>
