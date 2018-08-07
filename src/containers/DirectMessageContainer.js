@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Query } from 'react-apollo';
 import { Comment } from 'semantic-ui-react';
 
@@ -8,27 +8,28 @@ import {
 	NEW_DIRECT_MESSAGE_SUBSCRIPTION,
 } from '../queries/message';
 
-import { Component } from 'react';
-
 class DirectMessagesSubscribeWrapper extends Component {
-	// componentDidMount() {
-	// 	this.unsubscribe = this.props.subscribeToNewMessages();
-	// }
-	//
-	// componentDidUpdate(prevProps) {
-	// 	if (this.props.variables.channelId !== prevProps.variables.channelId) {
-	// 		if (this.unsubscribe) {
-	// 			this.unsubscribe();
-	// 		}
-	// 		this.unsubscribe = this.props.subscribeToNewMessages();
-	// 	}
-	// }
-	//
-	// componentWillUnmount() {
-	// 	if (this.unsubscribe) {
-	// 		this.unsubscribe();
-	// 	}
-	// }
+	componentDidMount() {
+		this.unsubscribe = this.props.subscribeToNewMessages();
+	}
+
+	componentDidUpdate(prevProps) {
+		if (
+			this.props.variables.teamId !== prevProps.variables.teamId ||
+			this.props.variables.userId !== prevProps.variables.userId
+		) {
+			if (this.unsubscribe) {
+				this.unsubscribe();
+			}
+			this.unsubscribe = this.props.subscribeToNewMessages();
+		}
+	}
+
+	componentWillUnmount() {
+		if (this.unsubscribe) {
+			this.unsubscribe();
+		}
+	}
 
 	render() {
 		const {
@@ -74,15 +75,15 @@ const DirectMessageContainer = ({ teamId, userId }) => (
 					subscribeToNewMessages={() =>
 						subscribeToMore({
 							document: NEW_DIRECT_MESSAGE_SUBSCRIPTION,
-							variables: { teamId },
+							variables: { teamId, userId },
 							updateQuery: (prev, { subscriptionData }) => {
 								if (!subscriptionData.data) return prev;
 
-								const newMessage = subscriptionData.data.newDirectMessage;
+								const newDirectMessage = subscriptionData.data.newDirectMessage;
 
 								return {
 									...prev,
-									directMessages: [...prev.directMessages, newMessage],
+									directMessages: [...prev.directMessages, newDirectMessage],
 								};
 							},
 						})
