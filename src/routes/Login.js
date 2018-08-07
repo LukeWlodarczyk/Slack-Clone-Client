@@ -2,6 +2,8 @@ import React from 'react';
 import { Formik } from 'formik';
 import { Mutation } from 'react-apollo';
 
+import { wsLink } from '../apollo';
+
 import {
 	Container,
 	Header,
@@ -35,7 +37,8 @@ const Login = ({ history }) => (
 					if (success) {
 						localStorage.setItem('token', token);
 						localStorage.setItem('refreshToken', refreshToken);
-						return history.push('/');
+						wsLink.subscriptionClient.tryReconnect();
+						return history.push('/view-team');
 					}
 
 					setErrors(formatApiErrors(errors));
