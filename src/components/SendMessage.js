@@ -1,7 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Input } from 'semantic-ui-react';
+import { Button, Icon, Input } from 'semantic-ui-react';
 import { Formik } from 'formik';
+
+import FileUpload from './FileUpload';
 
 import { Mutation } from 'react-apollo';
 
@@ -10,7 +12,9 @@ import formatApiErrors from '../helpers/formatApiErrors';
 const SendMessageWrapper = styled.div`
 	grid-column: 3;
 	grid-row: 3;
-	margin: 20px;
+	margin: 10px;
+	display: grid;
+	grid-template-columns: 42px 1fr;
 `;
 
 const ENTER_KEY = 13;
@@ -63,8 +67,12 @@ const SendMessage = ({
 					isSubmitting,
 				}) => (
 					<SendMessageWrapper>
+						<FileUpload>
+							<Button icon>
+								<Icon name="plus" />
+							</Button>
+						</FileUpload>
 						<Input
-							fluid
 							placeholder={`Message #${placeholder}`}
 							name="text"
 							value={values.text}

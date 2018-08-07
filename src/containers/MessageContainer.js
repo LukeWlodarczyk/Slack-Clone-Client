@@ -1,14 +1,13 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Query } from 'react-apollo';
 import { Comment } from 'semantic-ui-react';
 
 import Messages from '../components/Messages';
+import FileUpload from '../components/FileUpload';
 import {
 	CHANNEL_MESSAGES,
 	NEW_CHANNEL_MESSAGE_SUBSCRIPTION,
 } from '../queries/message';
-
-import { Component } from 'react';
 
 class MessagesSubscribeWrapper extends Component {
 	componentDidMount() {
@@ -41,19 +40,23 @@ class MessagesSubscribeWrapper extends Component {
 		}
 		return (
 			<Messages>
-				<Comment.Group>
-					{channelMessages.map(message => (
-						<Comment key={message.id}>
-							<Comment.Content>
-								<Comment.Author as="a">{message.user.username}</Comment.Author>
-								<Comment.Metadata>
-									<div>{message.created_at}</div>
-								</Comment.Metadata>
-								<Comment.Text>{message.text}</Comment.Text>
-							</Comment.Content>
-						</Comment>
-					))}
-				</Comment.Group>
+				<FileUpload disableClick>
+					<Comment.Group>
+						{channelMessages.map(message => (
+							<Comment key={message.id}>
+								<Comment.Content>
+									<Comment.Author as="a">
+										{message.user.username}
+									</Comment.Author>
+									<Comment.Metadata>
+										<div>{message.created_at}</div>
+									</Comment.Metadata>
+									<Comment.Text>{message.text}</Comment.Text>
+								</Comment.Content>
+							</Comment>
+						))}
+					</Comment.Group>
+				</FileUpload>
 			</Messages>
 		);
 	}
