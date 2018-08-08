@@ -103,7 +103,7 @@ const InvitePeopleModal = ({ open, onClose, teamId }) => (
 									</Form.Group>
 								</Form>
 							</Modal.Content>
-						</Modal>;
+						</Modal>
 					</Form>
 				)}
 			/>

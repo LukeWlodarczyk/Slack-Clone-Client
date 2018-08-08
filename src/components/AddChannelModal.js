@@ -112,7 +112,7 @@ const AddChannelModal = ({ open, onClose, teamId }) => (
 									</Form.Group>
 								</Form>
 							</Modal.Content>
-						</Modal>;
+						</Modal>
 					</Form>
 				)}
 			/>

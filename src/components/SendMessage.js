@@ -26,6 +26,7 @@ const SendMessage = ({
 	optimisticResponse,
 	update,
 	placeholder,
+	channelId,
 }) => (
 	<Mutation mutation={MUTATION}>
 		{mutate => (
@@ -67,7 +68,7 @@ const SendMessage = ({
 					isSubmitting,
 				}) => (
 					<SendMessageWrapper>
-						<FileUpload>
+						<FileUpload channelId={channelId}>
 							<Button icon>
 								<Icon name="plus" />
 							</Button>

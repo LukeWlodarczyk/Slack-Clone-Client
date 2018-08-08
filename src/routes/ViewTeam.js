@@ -70,6 +70,7 @@ export default ({
 					<Header channelName={channel.name} />
 					<MessageContainer channelId={channel.id} />
 					<SendMessage
+						channelId={channel.id}
 						MUTATION={CREATE_MESSAGE}
 						mutationName="createMessage"
 						placeholder={channel.name}

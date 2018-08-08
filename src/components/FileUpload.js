@@ -1,14 +1,29 @@
 import React from 'react';
 import Dropzone from 'react-dropzone';
+import { Mutation } from 'react-apollo';
 
-const FileUpload = ({ children, disableClick }) => (
-	<Dropzone
-		className="ignore"
-		onDrop={files => console.log(files)}
-		disableClick={disableClick}
-	>
-		{children}
-	</Dropzone>
+import { NEW_FILE_MESSAGE } from '../queries/message';
+
+const FileUpload = ({ children, disableClick, channelId, style = {} }) => (
+	<Mutation mutation={NEW_FILE_MESSAGE}>
+		{mutate => (
+			<Dropzone
+				style={style}
+				className="ignore"
+				onDrop={async ([file]) => {
+					const response = await mutate({
+						variables: {
+							channelId,
+							file,
+						},
+					});
+				}}
+				disableClick={disableClick}
+			>
+				{children}
+			</Dropzone>
+		)}
+	</Mutation>
 );
 
 export default FileUpload;
