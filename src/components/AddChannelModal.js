@@ -1,7 +1,9 @@
 import React from 'react';
 import { Formik } from 'formik';
 import { Mutation } from 'react-apollo';
-import { Button, Form, Input, Modal } from 'semantic-ui-react';
+import { Button, Form, Input, Modal, Checkbox } from 'semantic-ui-react';
+
+import MultiSelectUsers from './MultiSelectUsers';
 
 import { CREATE_CHANEL } from '../queries/channel';
 import { AUTH_USER } from '../queries/user';
@@ -33,11 +35,18 @@ const AddChannelModal = ({ open, onClose, teamId }) => (
 			<Formik
 				initialValues={{
 					name: '',
+					public: true,
+					privateMembers: [],
 				}}
 				validate={validate}
 				onSubmit={async (values, { setSubmitting, setErrors, resetForm }) => {
 					const response = await createChannel({
-						variables: { name: values.name, teamId },
+						variables: {
+							name: values.name,
+							teamId,
+							privateMembers: values.privateMembers,
+							public: values.public,
+						},
 						optimisticResponse: {
 							createChannel: {
 								__typename: 'Mutation',
@@ -72,6 +81,7 @@ const AddChannelModal = ({ open, onClose, teamId }) => (
 					handleSubmit,
 					isSubmitting,
 					resetForm,
+					setFieldValue,
 				}) => (
 					<Form onSubmit={handleSubmit}>
 						<Modal
@@ -95,6 +105,28 @@ const AddChannelModal = ({ open, onClose, teamId }) => (
 										/>
 										{errors && <p>{errors.name}</p>}
 									</Form.Field>
+									<Form.Field>
+										<Checkbox
+											toggle
+											value={!values.public}
+											onChange={(e, { checked }) =>
+												setFieldValue('public', !checked)
+											}
+											label="Private"
+										/>
+									</Form.Field>
+									{!values.public && (
+										<Form.Field>
+											<MultiSelectUsers
+												teamId={teamId}
+												placeholder="Select members to invite"
+												value={values.privateMembers}
+												handleChange={(e, { value }) =>
+													setFieldValue('privateMembers', value)
+												}
+											/>
+										</Form.Field>
+									)}
 									<Form.Group widths="equal">
 										<Button
 											disabled={isSubmitting}
