@@ -29,7 +29,7 @@ const update = teamId => (store, { data: { createChannel } }) => {
 	store.writeQuery({ query: AUTH_USER, data: newData });
 };
 
-const AddChannelModal = ({ open, onClose, teamId }) => (
+const AddChannelModal = ({ open, onClose, teamId, currentUserId }) => (
 	<Mutation mutation={CREATE_CHANEL} update={update(teamId)}>
 		{createChannel => (
 			<Formik
@@ -124,6 +124,7 @@ const AddChannelModal = ({ open, onClose, teamId }) => (
 												handleChange={(e, { value }) =>
 													setFieldValue('privateMembers', value)
 												}
+												currentUserId={currentUserId}
 											/>
 										</Form.Field>
 									)}

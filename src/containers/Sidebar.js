@@ -20,7 +20,7 @@ class Sidebar extends Component {
 	};
 
 	render() {
-		const { teams, team, username } = this.props;
+		const { teams, team, username, currentUserId } = this.props;
 
 		return (
 			<Fragment>
@@ -48,6 +48,7 @@ class Sidebar extends Component {
 							onClose={this.toggleModal('modalAddChannelOpen')}
 							open={this.state.modalAddChannelOpen}
 							teamId={team.id}
+							currentUserId={currentUserId}
 						/>
 						<InvitePeopleModal
 							onClose={this.toggleModal('modalInvitePeopleOpen')}

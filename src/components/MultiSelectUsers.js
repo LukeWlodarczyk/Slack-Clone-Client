@@ -4,10 +4,16 @@ import { TEAM_MEMBER } from '../queries/team';
 
 import { Dropdown } from 'semantic-ui-react';
 
-const MultiSelectUsers = ({ value, placeholder, handleChange, teamId }) => (
+const MultiSelectUsers = ({
+	value,
+	placeholder,
+	handleChange,
+	teamId,
+	currentUserId,
+}) => (
 	<Query query={TEAM_MEMBER} variables={{ teamId }}>
-		{({ data: { teamMembers }, loading }) => {
-			return (
+		{({ data: { teamMembers }, loading }) =>
+			loading ? null : (
 				<Dropdown
 					value={value}
 					onChange={handleChange}
@@ -16,14 +22,16 @@ const MultiSelectUsers = ({ value, placeholder, handleChange, teamId }) => (
 					multiple
 					search
 					selection
-					options={teamMembers.map(tm => ({
-						key: tm.id,
-						value: tm.id,
-						text: tm.username,
-					}))}
+					options={teamMembers
+						.filter(tm => tm.id !== currentUserId)
+						.map(tm => ({
+							key: tm.id,
+							value: tm.id,
+							text: tm.username,
+						}))}
 				/>
-			);
-		}}
+			)
+		}
 	</Query>
 );
 

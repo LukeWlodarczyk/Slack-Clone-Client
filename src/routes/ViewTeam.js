@@ -21,7 +21,7 @@ export default ({
 		{({ data: { getAuthUser }, loading }) => {
 			if (loading) return 'Loading';
 
-			const myAllTeams = getAuthUser.teams;
+			const { teams: myAllTeams, id: currentUserId } = getAuthUser;
 
 			if (!myAllTeams.length) {
 				return <Redirect to="/create-team" />;
@@ -66,6 +66,7 @@ export default ({
 						}))}
 						username={getAuthUser.username}
 						history={history}
+						currentUserId={currentUserId}
 					/>
 					<Header channelName={channel.name} />
 					<MessageContainer channelId={channel.id} />
