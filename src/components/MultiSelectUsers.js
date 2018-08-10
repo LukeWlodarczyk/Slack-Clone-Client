@@ -1,6 +1,6 @@
 import React from 'react';
 import { Query } from 'react-apollo';
-import { TEAM_MEMBER } from '../queries/team';
+import { TEAM_MEMBERS } from '../queries/team';
 
 import { Dropdown } from 'semantic-ui-react';
 
@@ -11,7 +11,7 @@ const MultiSelectUsers = ({
 	teamId,
 	currentUserId,
 }) => (
-	<Query query={TEAM_MEMBER} variables={{ teamId }}>
+	<Query query={TEAM_MEMBERS} variables={{ teamId }}>
 		{({ data: { teamMembers }, loading }) =>
 			loading ? null : (
 				<Dropdown

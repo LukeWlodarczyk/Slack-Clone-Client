@@ -51,6 +51,7 @@ export const AUTH_USER = gql`
 				channels {
 					id
 					name
+					dm
 				}
 			}
 		}

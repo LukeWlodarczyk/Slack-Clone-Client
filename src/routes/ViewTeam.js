@@ -23,6 +23,8 @@ export default ({
 
 			const { teams: myAllTeams, id: currentUserId } = getAuthUser;
 
+			console.log(myAllTeams);
+
 			if (!myAllTeams.length) {
 				return <Redirect to="/create-team" />;
 			}

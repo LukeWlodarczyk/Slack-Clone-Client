@@ -36,7 +36,7 @@ export const ADD_TEAM_MEMBER = gql`
 	}
 `;
 
-export const TEAM_MEMBER = gql`
+export const TEAM_MEMBERS = gql`
 	query($teamId: ID!) {
 		teamMembers(teamId: $teamId) {
 			id

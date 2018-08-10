@@ -1,81 +1,107 @@
 import React from 'react';
-import { Button, Form, Input, Modal } from 'semantic-ui-react';
-import { Query } from 'react-apollo';
-import Downshift from 'downshift';
+import { Button, Form, Modal } from 'semantic-ui-react';
+import { Formik } from 'formik';
+import { Mutation } from 'react-apollo';
 
-import { TEAM_MEMBER } from '../queries/team';
+import MultiSelectUsers from './MultiSelectUsers';
 
-const DirectMessageModal = ({ open, onClose, teamId, history }) => (
-	<Query query={TEAM_MEMBER} variables={{ teamId }}>
-		{({ data: { teamMembers }, loading }) => (
-			<Modal open={open} onClose={onClose}>
-				<Modal.Header>New conversation</Modal.Header>
-				<Modal.Content>
-					<Form>
-						<Form.Field>
-							{!loading && (
-								<Downshift
-									onChange={selectedUser => {
-										history.push(
-											`/view-team/user/${teamId}/${selectedUser.id}`
-										);
-										onClose();
-									}}
-								>
-									{({
-										getInputProps,
-										getItemProps,
-										isOpen,
-										inputValue,
-										selectedItem,
-										highlightedIndex,
-									}) => (
-										<div>
-											<Input
-												{...getInputProps({ placeholder: 'Select user...' })}
-												fluid
-											/>
-											{isOpen && (
-												<div style={{ border: '1px solid #ccc' }}>
-													{teamMembers
-														.filter(
-															i =>
-																!inputValue ||
-																i.username
-																	.toLowerCase()
-																	.includes(inputValue.toLowerCase())
-														)
-														.map((item, index) => (
-															<div
-																{...getItemProps({ item })}
-																key={item.id}
-																style={{
-																	backgroundColor:
-																		highlightedIndex === index
-																			? 'gray'
-																			: 'white',
-																	fontWeight:
-																		selectedItem === item ? 'bold' : 'normal',
-																}}
-															>
-																{item.username}
-															</div>
-														))}
-												</div>
-											)}
-										</div>
-									)}
-								</Downshift>
-							)}
-						</Form.Field>
-						<Button fluid onClick={onClose}>
-							Cancel
-						</Button>
-					</Form>
-				</Modal.Content>
-			</Modal>
+import { GET_OR_CREATE_CHANNEL } from '../queries/channel';
+import { AUTH_USER } from '../queries/user';
+import formatApiErrors from '../helpers/formatApiErrors';
+
+const update = teamId => (store, { data: { getOrCreateChannel } }) => {
+	const { channel, success } = getOrCreateChannel;
+
+	if (!success) {
+		return;
+	}
+	const data = store.readQuery({ query: AUTH_USER });
+
+	const newData = JSON.parse(JSON.stringify(data));
+
+	newData.getAuthUser.teams.find(team => {
+		if (team.id === teamId) {
+			team.channels = [...team.channels, channel];
+		}
+	});
+
+	store.writeQuery({ query: AUTH_USER, data: newData });
+};
+
+const DirectMessageModal = ({ open, onClose, teamId, currentUserId }) => (
+	<Mutation mutation={GET_OR_CREATE_CHANNEL} update={update(teamId)}>
+		{getOrCreateChannel => (
+			<Formik
+				initialValues={{
+					privateMembers: [],
+				}}
+				onSubmit={async (values, { setSubmitting, setErrors, resetForm }) => {
+					const response = await getOrCreateChannel({
+						variables: {
+							dmMembers: values.privateMembers,
+							teamId,
+						},
+					});
+
+					console.log({ response });
+
+					setSubmitting(false);
+
+					const { success, errors } = response.data.getOrCreateChannel;
+
+					if (success) {
+						resetForm();
+						return onClose();
+					}
+
+					setErrors(formatApiErrors(errors));
+				}}
+				render={({
+					values,
+					errors,
+					touched,
+					handleSubmit,
+					isSubmitting,
+					resetForm,
+					setFieldValue,
+				}) => (
+					<Modal open={open} onClose={onClose}>
+						<Modal.Header>New conversation</Modal.Header>
+						<Modal.Content>
+							<Form onSubmit={handleSubmit}>
+								<Form.Field>
+									<MultiSelectUsers
+										teamId={teamId}
+										placeholder="Select members to message"
+										value={values.privateMembers}
+										handleChange={(e, { value }) =>
+											setFieldValue('privateMembers', value)
+										}
+										currentUserId={currentUserId}
+									/>
+								</Form.Field>
+								<Form.Group widths="equal">
+									<Button
+										disabled={isSubmitting}
+										fluid
+										onClick={e => {
+											resetForm();
+											onClose(e);
+										}}
+									>
+										Cancel
+									</Button>
+									<Button disabled={isSubmitting} type="submit" fluid>
+										Create conversation
+									</Button>
+								</Form.Group>
+							</Form>
+						</Modal.Content>
+					</Modal>
+				)}
+			/>
 		)}
-	</Query>
+	</Mutation>
 );
 
 export default DirectMessageModal;

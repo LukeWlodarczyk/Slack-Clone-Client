@@ -3,7 +3,7 @@ import { Formik } from 'formik';
 import { Mutation } from 'react-apollo';
 import { Button, Form, Input, Modal } from 'semantic-ui-react';
 
-import { ADD_TEAM_MEMBER, TEAM_MEMBER } from '../queries/team';
+import { ADD_TEAM_MEMBER, TEAM_MEMBERS } from '../queries/team';
 import formatApiErrors from '../helpers/formatApiErrors';
 import validate from '../validation/invitePeople';
 
@@ -15,7 +15,7 @@ const update = teamId => (store, { data: { addTeamMember } }) => {
 	}
 
 	const data = store.readQuery({
-		query: TEAM_MEMBER,
+		query: TEAM_MEMBERS,
 		variables: { teamId },
 	});
 
@@ -24,7 +24,7 @@ const update = teamId => (store, { data: { addTeamMember } }) => {
 	newData.teamMembers.push(user);
 
 	store.writeQuery({
-		query: TEAM_MEMBER,
+		query: TEAM_MEMBERS,
 		variables: { teamId },
 		data: newData,
 	});

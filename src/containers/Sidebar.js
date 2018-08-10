@@ -22,6 +22,17 @@ class Sidebar extends Component {
 	render() {
 		const { teams, team, username, currentUserId } = this.props;
 
+		const regularChannels = [];
+		const dmChannels = [];
+
+		team.channels.forEach(c => {
+			if (c.dm) {
+				dmChannels.push(c);
+			} else {
+				regularChannels.push(c);
+			}
+		});
+
 		return (
 			<Fragment>
 				<Teams teams={teams} />
@@ -30,8 +41,8 @@ class Sidebar extends Component {
 					teamId={team.id}
 					isOwner={team.admin}
 					username={username}
-					channels={team.channels}
-					users={team.directMessageMembers}
+					channels={regularChannels}
+					dmChannels={dmChannels}
 					onAddChannelClick={this.toggleModal('modalAddChannelOpen')}
 					onInvitePeopleClick={this.toggleModal('modalInvitePeopleOpen')}
 					onNewDirectMessageClick={this.toggleModal('modalNewDirectMessage')}
@@ -41,6 +52,7 @@ class Sidebar extends Component {
 					open={this.state.modalNewDirectMessage}
 					teamId={team.id}
 					history={this.props.history}
+					currentUserId={currentUserId}
 				/>
 				{team.admin && (
 					<Fragment>
