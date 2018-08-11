@@ -11,7 +11,7 @@ const FileUpload = ({ children, disableClick, channelId, style = {} }) => (
 				style={style}
 				className="ignore"
 				onDrop={async ([file]) => {
-					const response = await mutate({
+					await mutate({
 						variables: {
 							channelId,
 							file,

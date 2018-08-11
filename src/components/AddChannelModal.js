@@ -55,6 +55,7 @@ const AddChannelModal = ({ open, onClose, teamId, currentUserId }) => (
 									__typename: 'Channel',
 									id: -1,
 									name: values.name,
+									dm: false,
 								},
 								errors: null,
 							},
@@ -108,7 +109,7 @@ const AddChannelModal = ({ open, onClose, teamId, currentUserId }) => (
 									<Form.Field>
 										<Checkbox
 											toggle
-											value={!values.public}
+											checked={!values.public}
 											onChange={(e, { checked }) =>
 												setFieldValue('public', !checked)
 											}

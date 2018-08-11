@@ -17,6 +17,7 @@ export const CREATE_CHANEL = gql`
 			channel {
 				id
 				name
+				dm
 			}
 			errors {
 				path

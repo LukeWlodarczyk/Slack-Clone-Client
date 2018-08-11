@@ -10,7 +10,7 @@ class Sidebar extends Component {
 	state = {
 		modalAddChannelOpen: false,
 		modalInvitePeopleOpen: false,
-		modalNewDirectMessage: false,
+		modalNewDirectMessageOpen: false,
 	};
 
 	toggleModal = name => e => {
@@ -45,11 +45,13 @@ class Sidebar extends Component {
 					dmChannels={dmChannels}
 					onAddChannelClick={this.toggleModal('modalAddChannelOpen')}
 					onInvitePeopleClick={this.toggleModal('modalInvitePeopleOpen')}
-					onNewDirectMessageClick={this.toggleModal('modalNewDirectMessage')}
+					onNewDirectMessageClick={this.toggleModal(
+						'modalNewDirectMessageOpen'
+					)}
 				/>
 				<NewDirectMessageModal
-					onClose={this.toggleModal('modalNewDirectMessage')}
-					open={this.state.modalNewDirectMessage}
+					onClose={this.toggleModal('modalNewDirectMessageOpen')}
+					open={this.state.modalNewDirectMessageOpen}
 					teamId={team.id}
 					history={this.props.history}
 					currentUserId={currentUserId}

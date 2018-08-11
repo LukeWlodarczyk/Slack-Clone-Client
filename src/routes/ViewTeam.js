@@ -18,12 +18,12 @@ export default ({
 	history,
 }) => (
 	<Query query={AUTH_USER} fetchPolicy="network-only">
-		{({ data: { getAuthUser }, loading }) => {
-			if (loading) return 'Loading';
+		{({ data: { getAuthUser }, loading, refetch }) => {
+			if (loading) {
+				return 'Loading';
+			}
 
 			const { teams: myAllTeams, id: currentUserId } = getAuthUser;
-
-			console.log(myAllTeams);
 
 			if (!myAllTeams.length) {
 				return <Redirect to="/create-team" />;

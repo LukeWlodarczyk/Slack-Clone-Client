@@ -8,7 +8,6 @@ import Register from './Register';
 import Login from './Login';
 import CreateTeam from './CreateTeam';
 import ViewTeam from './ViewTeam';
-import DirectMessages from './DirectMessages';
 
 export default () => (
 	<Router>
@@ -17,10 +16,6 @@ export default () => (
 			<Route path="/register" component={Register} />
 			<Route path="/login" component={Login} />
 			<PrivateRoute path="/create-team" component={CreateTeam} />
-			<PrivateRoute
-				path="/view-team/user/:teamId/:userId"
-				component={DirectMessages}
-			/>
 			<PrivateRoute
 				path="/view-team/:teamId?/:channelId?"
 				component={ViewTeam}

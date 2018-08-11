@@ -44,41 +44,10 @@ export const AUTH_USER = gql`
 				id
 				admin
 				name
-				directMessageMembers {
-					id
-					username
-				}
 				channels {
 					id
 					name
 					dm
-				}
-			}
-		}
-	}
-`;
-
-export const AUTH_USER_WITH_DIRECT_MESSAGE = gql`
-	query($userId: ID!) {
-		getUserById(userId: $userId) {
-			username
-			id
-		}
-
-		getAuthUser {
-			id
-			username
-			teams {
-				id
-				admin
-				name
-				directMessageMembers {
-					id
-					username
-				}
-				channels {
-					id
-					name
 				}
 			}
 		}

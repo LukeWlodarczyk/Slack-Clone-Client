@@ -28,7 +28,13 @@ const update = teamId => (store, { data: { getOrCreateChannel } }) => {
 	store.writeQuery({ query: AUTH_USER, data: newData });
 };
 
-const DirectMessageModal = ({ open, onClose, teamId, currentUserId }) => (
+const DirectMessageModal = ({
+	open,
+	onClose,
+	teamId,
+	currentUserId,
+	history,
+}) => (
 	<Mutation mutation={GET_OR_CREATE_CHANNEL} update={update(teamId)}>
 		{getOrCreateChannel => (
 			<Formik
@@ -41,17 +47,29 @@ const DirectMessageModal = ({ open, onClose, teamId, currentUserId }) => (
 							dmMembers: values.privateMembers,
 							teamId,
 						},
+						optimisticResponse: {
+							getOrCreateChannel: {
+								__typename: 'Mutation',
+								success: true,
+								channel: {
+									__typename: 'Channel',
+									id: -1,
+									name: values.privateMembers.join(' ,'),
+									dm: true,
+								},
+								errors: null,
+							},
+						},
 					});
-
-					console.log({ response });
 
 					setSubmitting(false);
 
-					const { success, errors } = response.data.getOrCreateChannel;
+					const { success, channel, errors } = response.data.getOrCreateChannel;
 
-					if (success) {
+					if (success || (!success && channel.id)) {
 						resetForm();
-						return onClose();
+						onClose();
+						return history.push(`/view-team/${teamId}/${channel.id}`);
 					}
 
 					setErrors(formatApiErrors(errors));
