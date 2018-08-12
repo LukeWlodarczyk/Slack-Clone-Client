@@ -56,6 +56,7 @@ class MessagesSubscribeWrapper extends Component {
 	render() {
 		const {
 			data: { channelMessages },
+			fetchMore,
 			loading,
 			variables: { channelId },
 		} = this.props;
@@ -78,35 +79,37 @@ class MessagesSubscribeWrapper extends Component {
 				disableClick
 			>
 				<Comment.Group>
-					{this.state.hasMoreItems && (
-						<Button
-							onClick={() => {
-								this.props.fetchMore({
-									variables: {
-										channelId,
-										offset: channelMessages.length,
-									},
-									updateQuery: (prev, { fetchMoreResult }) => {
-										if (!fetchMoreResult) return prev;
+					{channelMessages.length >= 35 &&
+						this.state.hasMoreItems && (
+							<Button
+								onClick={() => {
+									fetchMore({
+										variables: {
+											channelId,
+											cursor:
+												channelMessages[channelMessages.length - 1].created_at,
+										},
+										updateQuery: (prev, { fetchMoreResult }) => {
+											if (!fetchMoreResult) return prev;
 
-										if (fetchMoreResult.channelMessages.length < 35) {
-											this.setState({ hasMoreItems: false });
-										}
+											if (fetchMoreResult.channelMessages.length < 35) {
+												this.setState({ hasMoreItems: false });
+											}
 
-										return {
-											...prev,
-											channelMessages: [
-												...prev.channelMessages,
-												...fetchMoreResult.channelMessages,
-											],
-										};
-									},
-								});
-							}}
-						>
-							Load more
-						</Button>
-					)}
+											return {
+												...prev,
+												channelMessages: [
+													...prev.channelMessages,
+													...fetchMoreResult.channelMessages,
+												],
+											};
+										},
+									});
+								}}
+							>
+								Load more
+							</Button>
+						)}
 					{channelMessages
 						.slice()
 						.reverse()
@@ -132,7 +135,7 @@ class MessagesSubscribeWrapper extends Component {
 const MessageContainer = ({ channelId }) => (
 	<Query
 		query={CHANNEL_MESSAGES}
-		variables={{ channelId, offset: 0 }}
+		variables={{ channelId }}
 		fetchPolicy="network-only"
 	>
 		{({ subscribeToMore, ...rest }) => {
@@ -150,7 +153,7 @@ const MessageContainer = ({ channelId }) => (
 
 								return {
 									...prev,
-									channelMessages: [...prev.channelMessages, newMessage],
+									channelMessages: [newMessage, ...prev.channelMessages],
 								};
 							},
 						})
