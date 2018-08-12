@@ -25,8 +25,8 @@ export const NEW_FILE_MESSAGE = gql`
 `;
 
 export const CHANNEL_MESSAGES = gql`
-	query($channelId: ID!) {
-		channelMessages(channelId: $channelId) {
+	query($channelId: ID!, $offset: Int!) {
+		channelMessages(channelId: $channelId, offset: $offset) {
 			id
 			text
 			user {

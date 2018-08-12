@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Query } from 'react-apollo';
-import { Comment } from 'semantic-ui-react';
+import { Comment, Button } from 'semantic-ui-react';
 
 import FileUpload from '../components/FileUpload';
 import RenderText from '../components/RenderText';
@@ -31,6 +31,9 @@ const Message = ({ message: { url, text, filetype } }) => {
 };
 
 class MessagesSubscribeWrapper extends Component {
+	state = {
+		hasMoreItems: true,
+	};
 	componentDidMount() {
 		this.unsubscribe = this.props.subscribeToNewMessages();
 	}
@@ -75,17 +78,51 @@ class MessagesSubscribeWrapper extends Component {
 				disableClick
 			>
 				<Comment.Group>
-					{channelMessages.map(message => (
-						<Comment key={message.id}>
-							<Comment.Content>
-								<Comment.Author as="a">{message.user.username}</Comment.Author>
-								<Comment.Metadata>
-									<div>{message.created_at}</div>
-								</Comment.Metadata>
-								<Message message={message} />
-							</Comment.Content>
-						</Comment>
-					))}
+					{this.state.hasMoreItems && (
+						<Button
+							onClick={() => {
+								this.props.fetchMore({
+									variables: {
+										channelId,
+										offset: channelMessages.length,
+									},
+									updateQuery: (prev, { fetchMoreResult }) => {
+										if (!fetchMoreResult) return prev;
+
+										if (fetchMoreResult.channelMessages.length < 35) {
+											this.setState({ hasMoreItems: false });
+										}
+
+										return {
+											...prev,
+											channelMessages: [
+												...prev.channelMessages,
+												...fetchMoreResult.channelMessages,
+											],
+										};
+									},
+								});
+							}}
+						>
+							Load more
+						</Button>
+					)}
+					{channelMessages
+						.slice()
+						.reverse()
+						.map(message => (
+							<Comment key={message.id}>
+								<Comment.Content>
+									<Comment.Author as="a">
+										{message.user.username}
+									</Comment.Author>
+									<Comment.Metadata>
+										<div>{message.created_at}</div>
+									</Comment.Metadata>
+									<Message message={message} />
+								</Comment.Content>
+							</Comment>
+						))}
 				</Comment.Group>
 			</FileUpload>
 		);
@@ -95,7 +132,7 @@ class MessagesSubscribeWrapper extends Component {
 const MessageContainer = ({ channelId }) => (
 	<Query
 		query={CHANNEL_MESSAGES}
-		variables={{ channelId }}
+		variables={{ channelId, offset: 0 }}
 		fetchPolicy="network-only"
 	>
 		{({ subscribeToMore, ...rest }) => {
