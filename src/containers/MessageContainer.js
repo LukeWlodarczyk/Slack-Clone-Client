@@ -108,6 +108,7 @@ class MessagesSubscribeWrapper extends Component {
 			if (this.unsubscribe) {
 				this.unsubscribe();
 			}
+			this.setState({ hasMore: true });
 			this.unsubscribe = this.props.subscribeToNewMessages();
 		}
 
