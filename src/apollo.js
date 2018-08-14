@@ -45,7 +45,7 @@ const httpLinkWithMiddlewares = afterwareLink.concat(
 );
 
 export const wsLink = new WebSocketLink({
-	uri: `ws://localhost:5000/graphql`,
+	uri: `ws://localhost:5000/subscriptions`,
 	options: {
 		reconnect: true,
 		lazy: true,
