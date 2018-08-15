@@ -3,7 +3,6 @@ import { Query } from 'react-apollo';
 import { Comment } from 'semantic-ui-react';
 
 import FileUpload from '../components/FileUpload';
-import RenderText from '../components/RenderText';
 import Message from '../components/Message';
 
 import {
