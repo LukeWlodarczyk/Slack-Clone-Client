@@ -4,31 +4,12 @@ import { Comment } from 'semantic-ui-react';
 
 import FileUpload from '../components/FileUpload';
 import RenderText from '../components/RenderText';
+import Message from '../components/Message';
 
 import {
 	CHANNEL_MESSAGES,
 	NEW_CHANNEL_MESSAGE_SUBSCRIPTION,
 } from '../queries/message';
-
-const Message = ({ message: { url, text, filetype } }) => {
-	if (url) {
-		if (filetype.startsWith('image/')) {
-			return <img src={url} alt="" />;
-		} else if (filetype === 'text/plain') {
-			return <RenderText url={url} />;
-		} else if (filetype.startsWith('audio/')) {
-			return (
-				<div>
-					<audio controls>
-						<source src={url} type={filetype} />
-					</audio>
-				</div>
-			);
-		}
-	}
-
-	return <Comment.Text>{text}</Comment.Text>;
-};
 
 class MessagesSubscribeWrapper extends Component {
 	constructor(props) {
